@@ -1,0 +1,151 @@
+body {
+    --main-bg: #292f3b;
+    --low-color: #cc5555;
+    --high-color: turquoise;
+    --utility-color: wheat;
+    --text-color: #fefefe;
+
+    margin: 0;
+    padding: 0;
+    background: var(--main-bg);
+    font-family: sans-serif;
+    color:var(--text-color);
+
+}
+
+#csbox {
+    display: flex;
+}
+
+h1 {
+    color:var(--utility-color);
+    font-weight: 300;
+    text-align: center;
+    text-transform: uppercase;
+    padding: 30px 15px;
+    margin: 0;
+}
+h1 i {
+    color: var(--text-color);
+    margin-right: 10px;
+    font-size: 1.2;
+}
+
+/* Infobar
+/* =============================================== */
+#infobar {
+    flex: 0 0 250px;
+    padding: 40px 15px 30px 40px;
+}
+.infohead {
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--utility-color);
+    padding: 10px 5px;
+    color: var(--main-bg);
+    font-weight: bold;
+}
+.infobox {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-weight: 200;
+}
+.infobox:nth-child(odd) {
+    background: hsla(39, 77%, 83%, 0.1);
+}
+.infohead i,
+.infobox i {
+    margin-right: 10px;
+}
+.infobox i {
+    flex: 0 0 20px;
+}
+.infohead span,
+.infobox span {
+    margin: 0 4px 0 6px;
+    font-weight: bold;
+}
+.infobox span {
+    margin-left: auto;
+}
+.infobox i,
+.infobox span {
+    color:var(--utility-color);
+}
+.infobox-high i,
+.infobox-high span {
+    color:var(--high-color);
+}
+.infobox-low i,
+.infobox-low span {
+    color:var(--low-color);
+}
+
+/* Candlestick Chart
+/* =============================================== */
+.grid {
+    stroke-opacity: .3;
+}
+.grid .domain {
+    stroke-opacity: 0;
+}
+
+.axis line,
+.axis.xaxis path {
+    fill: none;
+    stroke: hsla(39, 77%, 83%, 0.5);
+    shape-rendering: crispEdges;
+}
+.tick text {
+    font: 14px sans-serif;
+    fill: hsla(39, 77%, 83%, 0.5);
+    stroke-opacity: .3;
+}
+.axis.yaxis path {
+    fill: none;
+    stroke: #292f3b;
+}
+
+.bands rect {
+    fill: hsla(39, 77%, 83%, 0.5);
+    fill-opacity: 0;
+    stroke-opacity: 0;
+    pointer-events: all;
+    shape-rendering: crispEdges;
+}
+.bands .hoved {
+    fill-opacity: .6;
+}
+.sticks rect {
+    pointer-events: none;
+    shape-rendering: crispEdges;
+}
+
+.sticks [class*="stick"],
+.candles [class*="candle"] {
+    fill: #c1c1c1;
+}
+
+.sticks .rise,
+.candles .rise {
+    fill: var(--high-color);
+}
+
+.sticks .fall,
+.candles .fall {
+    fill: var(--low-color);
+}
+
+.sticks .hoved {
+    stroke: var(--utility-color);
+}
+.candles .hoved {
+    stroke: var(--utility-color);
+}
+.candles rect {
+    pointer-events: none; shape-rendering: crispEdges;
+}
