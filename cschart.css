@@ -29,6 +29,7 @@ h1 i {
     color: var(--text-color);
     margin-right: 10px;
     font-size: 1.2;
+    font-style: normal;
 }
 
 /* Infobar

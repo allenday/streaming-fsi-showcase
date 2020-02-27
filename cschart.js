@@ -1,4 +1,7 @@
-function cschart() {
+function cschart(chartType) {
+    if (chartType !== 'ethereum' && chartType !== 'usd') {
+        return;
+    }
 
     const margin = {
         top: 50,
@@ -15,12 +18,19 @@ function cschart() {
         const minimal  = d3.min(genData, d => d.low);
         const maximal  = d3.max(genData, d => d.high);
 
-        // const scale = d3.scale
         const x = d3.scaleBand().range([0, width]);
-        const y = d3.scaleLog()
+        let y;
+
+if (chartType === 'ethereum') {
+            y = d3.scaleLog()
             .domain([1, 10000])
             .range([height, 0])
-            .base(10)
+            .base(10);
+        } else if(chartType === 'usd') {
+            y = d3.scaleLinear()
+            .domain([1, 10000])
+            .range([height, 0]);
+        }
 
         const xAxis = d3.axisBottom().scale(x).tickFormat(d3.timeFormat("%H:%M"));
 
