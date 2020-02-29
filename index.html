@@ -8,32 +8,69 @@
 </head>
 <body>
     <div id="demobox">
-        <h1><i class="fab fa-ethereum"></i> Streaming data from Ethereum PubSub</h1>
-        <div id="csbox">
-            <div id="infobar">
-                <div class="infohead">
-                    <i class="fas fa-clock"></i>
-                    Time: <span id="infodate"></span>
-                </div>
-                <div class="infobox">
-                    <i class="fas fa-door-open"></i>
-                    Open: <span id="infoopen"></span> Gwei
-                </div>
-                <div class="infobox infobox-high">
-                    <i class="fas fa-arrow-up"></i>
-                    High: <span id="infohigh"></span> Gwei
-                </div>
-                <div class="infobox infobox-low">
-                    <i class="fas fa-arrow-down"></i>
-                    Low: <span id="infolow"></span> Gwei
-                </div>
-                <div class="infobox">
-                    <i class="fas fa-door-closed"></i>
-                    Close: <span id="infoclose"></span> Gwei
-                </div>
-            </div>
-            <div id="chart1"></div>
-        </div> <!-- csbox -->
+        <h1>Transactions Stream Analysis</h1>
+        <div class="home-container">
+            <div class="chart-box wrap-box">
+                <a href="./ethereum.html" class="chart-container">
+                    <header id="ethereum-info">
+                        <h2>
+                            Ethereum Gas Price
+                            <div class="infohead">
+                                <i class="fas fa-clock"></i>
+                                <span id="infodate"></span>
+                            </div>
+                        </h2>
+                        <div class="utility-data-container">
+                            <div class="infobox">
+                                Open: <span id="infoopen"></span> Gwei
+                            </div>
+                            <div class="infobox infobox-high">
+                                High: <span id="infohigh"></span> Gwei
+                            </div>
+                            <div class="infobox infobox-low">
+                                Low: <span id="infolow"></span> Gwei
+                            </div>
+                            <div class="infobox">
+                                Close: <span id="infoclose"></span> Gwei
+                            </div>
+                        </div>
+                    </header>
+                    <div id="ethereum-chart"></div>
+                </a>
+
+                <a href="./trade.html" class="chart-container">
+                    <header id="trade-info">
+                        <h2>
+                            Trades Price, Symbol: SPY
+                            <div class="infohead">
+                                <i class="fas fa-clock"></i>
+                                <span id="infodate"></span>
+                            </div>
+                        </h2>
+                        <div class="utility-data-container">
+                            <div class="infobox">
+                                Open: <span id="infoopen"></span> USD
+                            </div>
+                            <div class="infobox infobox-high">
+                                High: <span id="infohigh"></span> USD
+                            </div>
+                            <div class="infobox infobox-low">
+                                Low: <span id="infolow"></span> USD
+                            </div>
+                            <div class="infobox">
+                                Close: <span id="infoclose"></span> USD
+                            </div>
+                        </div>
+                    </header>
+                    <div id="trade-chart"></div>
+                </a>
+            </div> <!-- csbox -->
+
+            <iframe
+                src="https://docs.google.com/presentation/d/e/2PACX-1vRp4VLqH5BQMNtFZgTCbj2SGehuHIjC8EM04x3Ws756oJPeBOzKTBh1ChFi7pQO7yihVKFXpW370ewm/embed?start=true&loop=true&delayms=3000"
+                frameborder="0" width="1440" allowfullscreen="true" mozallowfullscreen="true"
+                webkitallowfullscreen="true"></iframe>
+        </div>
     </div> <!-- demobox -->
     <!-- The core Firebase JS SDK is always required and must be listed first -->
     <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
@@ -41,8 +78,28 @@
 
     <script src="//d3js.org/d3.v5.min.js" charset="utf-8"></script>
 
-    <script src="cschart.js" defer></script>
-    <script src="csmain.js" defer></script>
-    <script src="ethereum.js" defer></script>
+    <script src="csmain.js"></script>
+
+    <script>
+        createChart({
+            type: 'ethereum',
+            size: 'small',
+            id: '#ethereum-chart',
+            infoSelector: '#ethereum-info',
+            height: 350,
+            collection: 'demo_candlestick',
+            divider: 1000000000
+        });
+
+        createChart({
+            type: 'trade',
+            size: 'small',
+            id: '#trade-chart',
+            infoSelector: '#trade-info',
+            height: 350,
+            collection: 'demo_trades',
+            divider: 100
+        });
+    </script>
 </body>
 </html>
