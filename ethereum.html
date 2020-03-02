@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="cschart.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+</head>
+
+<body>
+    <div id="demobox">
+        <h1><i class="fab fa-ethereum"></i> Streaming data from Ethereum PubSub</h1>
+        <div class="chart-box">
+            <div id="infobar">
+                <div class="infohead">
+                    <i class="fas fa-clock"></i>
+                    Time: <span id="infodate"></span>
+                </div>
+                <div class="infobox">
+                    <i class="fas fa-door-open"></i>
+                    Open: <span id="infoopen"></span> Gwei
+                </div>
+                <div class="infobox infobox-high">
+                    <i class="fas fa-arrow-up"></i>
+                    High: <span id="infohigh"></span> Gwei
+                </div>
+                <div class="infobox infobox-low">
+                    <i class="fas fa-arrow-down"></i>
+                    Low: <span id="infolow"></span> Gwei
+                </div>
+                <div class="infobox">
+                    <i class="fas fa-door-closed"></i>
+                    Close: <span id="infoclose"></span> Gwei
+                </div>
+            </div>
+            <div id="chart"></div>
+        </div> <!-- csbox -->
+    </div> <!-- demobox -->
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.8.1/firebase-firestore.js"></script>
+
+    <script src="//d3js.org/d3.v5.min.js" charset="utf-8"></script>
+
+    <script src="csmain.js"></script>
+
+    <script>
+        createChart({
+            type: 'ethereum',
+            size: 'large',
+            id: '#chart',
+            height: 500,
+            collection: 'demo_candlestick',
+            divider: 1000000000
+        });
+    </script>
+</body>
+
+</html>

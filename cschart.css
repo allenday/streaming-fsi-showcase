@@ -13,8 +13,17 @@ body {
 
 }
 
-#csbox {
+.home-container {
     display: flex;
+    padding: 0 30px;
+}
+
+.chart-box {
+    display: flex;
+}
+.chart-box.wrap-box{
+    flex-wrap: wrap;
+    padding-right: 20px;
 }
 
 h1 {
@@ -29,6 +38,38 @@ h1 i {
     color: var(--text-color);
     margin-right: 10px;
     font-size: 1.2;
+    font-style: normal;
+}
+
+/* Chart Container */
+.chart-container {
+    flex: 100%;
+    display: block;
+    text-decoration: none;
+    color: currentColor;
+}
+.chart-container:not(:last-child) {
+    margin-bottom: 30px;
+}
+.chart-container h2 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+.chart-container h2 .infohead{
+    font-size: 1rem;
+    margin-left: auto;
+}
+.chart-container .utility-data-container {
+    display: flex;
+    font-size: .8rem;
+    margin-bottom: -30px;
+    background: var(--main-bg);
+    z-index: 1;
+    position: relative;
+}
+.chart-container .utility-data-container > * {
+    flex: 1 0 20%;
 }
 
 /* Infobar
@@ -54,7 +95,7 @@ h1 i {
     text-transform: uppercase;
     font-weight: 200;
 }
-.infobox:nth-child(odd) {
+#infobar .infobox:nth-child(odd) {
     background: hsla(39, 77%, 83%, 0.1);
 }
 .infohead i,
@@ -69,7 +110,7 @@ h1 i {
     margin: 0 4px 0 6px;
     font-weight: bold;
 }
-.infobox span {
+#infobar .infobox span {
     margin-left: auto;
 }
 .infobox i,
@@ -147,5 +188,6 @@ h1 i {
     stroke: var(--utility-color);
 }
 .candles rect {
-    pointer-events: none; shape-rendering: crispEdges;
+    pointer-events: none;
+    shape-rendering: crispEdges;
 }
