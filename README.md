@@ -2,7 +2,8 @@
 
 ![Architecture](images/architecture.png "Architecture")
 
-## Prepare stock data
+## Stock Trades
+### Prepare stock data
 
 Copy stock trades historical data
 ```shell script
@@ -10,12 +11,12 @@ export PROJECT=$(gcloud config get-value project 2> /dev/null)
 bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 ```
 
-## AI Notebook
+### AI Notebook
 
 Clone repository in AI notebooks environment
 Run bq.ipynb notebook
 
-## Replay tool
+### Replay tool
 
 Create topic
 ```shell script
@@ -53,4 +54,63 @@ gcloud compute instances create-with-container replay-tool \
   --container-arg=$TEMP_RESOURCE_NAME
 ```
 
-## Dataflow
+### Dataflow
+
+Create subscription
+```shell script
+gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-deadline=60
+```
+
+#### Enable Dataflow API in console
+go to [APIs page](https://console.developers.google.com/apis/api/dataflow.googleapis.com/overview)
+search for Dataflow and click - "Enable"
+#### Enable Firestore
+go to [Firestore Page](https://console.cloud.google.com/firestore/welcome)
+select Firestore in Native mode
+
+#### Start Dataflow pipeline
+```shell script
+cd ./dataflow
+mvn clean package
+java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google.allenday.TransactionMetricsPipeline \
+--runner=org.apache.beam.runners.dataflow.DataflowRunner \
+--project=$PROJECT \
+--inputDataTopic=projects/$PROJECT/topics/polygon.trades \
+--firestoreCollection=polygon_trades \
+--streaming=true \
+--jobName=polygon-candlestick-demo \
+--inputType=polygon
+```
+
+### Charts
+
+#### Firestore configuration
+Go to [Firestore console](https://console.firebase.google.com/)
+- add your project to Firebase Console
+- add new application named "charts"
+- copy Firebase config
+- setup permissions on database
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /polygon_trades/{documentId} {
+     allow read;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+#### JS Application
+- modify `charts/csmain.js` by putting your Firebase config inside
+- create public bucket
+```shell script
+export PUBLIC_BUCKET_NAME=$PROJECT_public
+gsutil mb gs://$PUBLIC_BUCKET_NAME
+gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
+```
+- upload files from `charts` directory to public bucket
+- check real-time chart

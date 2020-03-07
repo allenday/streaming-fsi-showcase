@@ -1,12 +1,13 @@
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyCRuxL33WHgy3E5zeBMke_8rlhCIrZhl4A",
-    authDomain: "ethereum-streaming-dev.firebaseapp.com",
-    databaseURL: "https://ethereum-streaming-dev.firebaseio.com",
-    projectId: "ethereum-streaming-dev",
-    storageBucket: "ethereum-streaming-dev.appspot.com",
-    messagingSenderId: "249269731739",
-    appId: "1:249269731739:web:97dd7bfaa4991d5f"
+          apiKey: "AIzaSyCr31vEOLAEDCQ9ULvWcenNRFuH4wXNcRg",
+          authDomain: "streaming-fsi-showcase.firebaseapp.com",
+          databaseURL: "https://streaming-fsi-showcase.firebaseio.com",
+          projectId: "streaming-fsi-showcase",
+          storageBucket: "streaming-fsi-showcase.appspot.com",
+          messagingSenderId: "423534693888",
+          appId: "1:423534693888:web:977377d88cabeaa8ea52e5",
+          measurementId: "G-287J05KPYJ"
 };
 
 const chartDimensions = {
