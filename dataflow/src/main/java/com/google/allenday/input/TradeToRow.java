@@ -7,7 +7,7 @@ import org.apache.beam.sdk.values.Row;
 public class TradeToRow extends DoFn<StockTrade, Row> {
     String symbol;
 
-    TradeToRow(String symbol) {
+    public TradeToRow(String symbol) {
         this.symbol = symbol;
     }
 
