@@ -8,13 +8,16 @@
 Copy stock trades historical data
 ```shell script
 export PROJECT=$(gcloud config get-value project 2> /dev/null)
+bq mk polygon
 bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 ```
 
 ### AI Notebook
 
-Clone repository in AI notebooks environment
-Run jupyter/bq.ipynb notebook
+- clone repository in AI notebooks environment
+- run jupyter/_jupyter-extensions.ipynb notebook to install extensions
+- reboot jupyter notebook VM
+- run jupyter/bq.ipynb notebook
 
 ### Replay tool
 
