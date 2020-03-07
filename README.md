@@ -21,10 +21,12 @@ Create topic
 ```shell script
 gcloud pubsub topics create polygon.trades --project=$PROJECT
 ```
-Create VM running docker container
+
+Create temp resources and start a VM running docker container
 ```shell script
-bash ./replay/create_temp_resources.sh
-export TEMP_RESOURCE_NAME=$(./replay/get_temp_resource_name.sh)
+cd ./replay
+bash ./create_temp_resources.sh
+export TEMP_RESOURCE_NAME=$(./get_temp_resource_name.sh)
 gcloud compute instances create-with-container replay-tool \
   --zone=us-central1-a \
   --machine-type=n1-standard-1 \
@@ -50,3 +52,5 @@ gcloud compute instances create-with-container replay-tool \
   --container-arg=--temp-bucket \
   --container-arg=$TEMP_RESOURCE_NAME
 ```
+
+## Dataflow
