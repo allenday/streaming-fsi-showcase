@@ -26,6 +26,12 @@ Create topic
 gcloud pubsub topics create polygon.trades --project=$PROJECT
 ```
 
+Clone this repository in Cloud Shell
+```shell script
+git clone https://github.com/allenday/streaming-fsi-showcase
+cd streaming-fsi-showcase
+```
+
 Create temp resources and start a VM running docker container
 ```shell script
 cd ./replay
@@ -91,7 +97,6 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
-- copy Firebase config
 - setup permissions on database
 ```
 rules_version = '2';
@@ -111,10 +116,10 @@ service cloud.firestore {
 ```
 
 #### JS Application
-- modify `charts/csmain.js` by putting your Firebase config inside
+- modify `charts/csmain.js` by putting your Firebase app config inside
 - create public bucket
 ```shell script
-export PUBLIC_BUCKET_NAME=$PROJECT_public
+export PUBLIC_BUCKET_NAME=${PROJECT}_public
 gsutil mb gs://$PUBLIC_BUCKET_NAME
 gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
 ```

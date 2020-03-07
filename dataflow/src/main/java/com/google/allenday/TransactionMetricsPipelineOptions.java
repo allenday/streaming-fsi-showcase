@@ -37,4 +37,10 @@ public interface TransactionMetricsPipelineOptions extends DataflowPipelineOptio
     Integer getSlidingWindowPeriod();
 
     void setSlidingWindowPeriod(Integer value);
+
+    @Description("Stock symbol to filter trades")
+    @Default.String("GE")
+    String getStockSymbol();
+
+    void setStockSymbol(String value);
 }

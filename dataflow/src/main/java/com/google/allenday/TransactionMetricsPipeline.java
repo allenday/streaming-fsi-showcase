@@ -61,8 +61,7 @@ public class TransactionMetricsPipeline {
                                     .addValue(key)
                                     .addValue(c.element().getPrice())
                                     .build();
-                            // TODO: Parameterize
-                            if (c.element().getSymbol().equalsIgnoreCase("SPY")) {
+                            if (c.element().getSymbol().equalsIgnoreCase(options.getStockSymbol())) {
                                 c.output(row);
                             }
                         }

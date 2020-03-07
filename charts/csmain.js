@@ -1,14 +1,6 @@
 // Your web app's Firebase configuration
-const firebaseConfig = {
-          apiKey: "AIzaSyCr31vEOLAEDCQ9ULvWcenNRFuH4wXNcRg",
-          authDomain: "streaming-fsi-showcase.firebaseapp.com",
-          databaseURL: "https://streaming-fsi-showcase.firebaseio.com",
-          projectId: "streaming-fsi-showcase",
-          storageBucket: "streaming-fsi-showcase.appspot.com",
-          messagingSenderId: "423534693888",
-          appId: "1:423534693888:web:977377d88cabeaa8ea52e5",
-          measurementId: "G-287J05KPYJ"
-};
+// you can find configuration in your Firebase console
+const firebaseConfig = {};
 
 const chartDimensions = {
     large: {
@@ -177,10 +169,14 @@ function renderChart({ type, size, data }) {
             let y;
 
             if (type === 'ethereum') {
-                y = d3.scaleLog()
+                y = d3.scaleLinear()
                     .domain([1, 10000])
-                    .range([height, 0])
-                    .base(10);
+                    .range([height, 0]);
+//              // for replay data log scale works better
+//              y = d3.scaleLog()
+//                    .domain([1, 10000])
+//                    .range([height, 0])
+//                    .base(10);
             } else if (type === 'trade') {
                 y = d3.scaleLinear()
                     .domain([1, 10000])
