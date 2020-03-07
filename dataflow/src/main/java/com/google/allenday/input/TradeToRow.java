@@ -5,6 +5,12 @@ import org.apache.beam.sdk.transforms.DoFn;
 import org.apache.beam.sdk.values.Row;
 
 public class TradeToRow extends DoFn<StockTrade, Row> {
+    String symbol;
+
+    TradeToRow(String symbol) {
+        this.symbol = symbol;
+    }
+
     @ProcessElement
     public void processElement(ProcessContext c) {
         String key = c.element().getTimestamp() + "_" + c.element().getSequenceNum();
@@ -14,8 +20,7 @@ public class TradeToRow extends DoFn<StockTrade, Row> {
                 .addValue(c.element().getPrice())
                 .build();
 
-        // TODO: Parameterize
-        if (c.element().getSymbol().equalsIgnoreCase("SPY")) {
+        if (c.element().getSymbol().equalsIgnoreCase(symbol)) {
             c.output(row);
         }
     }

@@ -4,10 +4,7 @@ import com.google.allenday.calculation.Candlestick;
 import com.google.allenday.calculation.CombineCandlestickFn;
 import com.google.allenday.firestore.DataPoint;
 import com.google.allenday.firestore.WriteDataToFirestoreDbFn;
-import com.google.allenday.input.DeserializeStockTrade;
-import com.google.allenday.input.DeserializeTransaction;
-import com.google.allenday.input.InputSchema;
-import com.google.allenday.input.TransactionToRow;
+import com.google.allenday.input.*;
 import com.google.allenday.transaction.StockTrade;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -52,20 +49,7 @@ public class TransactionMetricsPipeline {
             // TODO: extract
             rows = messages
                     .apply("Deserialize JSON", ParDo.of(new DeserializeStockTrade()))
-                    .apply(ParDo.of(new DoFn<StockTrade, Row>() {
-                        @ProcessElement
-                        public void processElement(ProcessContext c) {
-                            String key = c.element().getTimestamp() + "_" + c.element().getSequenceNum();
-                            Row row = Row
-                                    .withSchema(InputSchema.schema)
-                                    .addValue(key)
-                                    .addValue(c.element().getPrice())
-                                    .build();
-                            if (c.element().getSymbol().equalsIgnoreCase(options.getStockSymbol())) {
-                                c.output(row);
-                            }
-                        }
-                    }));
+                    .apply(ParDo.of(new TradeToRow(options.getStockSymbol())));
         }
         rows.setRowSchema(InputSchema.schema)
                 .apply(
