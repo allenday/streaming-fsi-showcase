@@ -14,7 +14,7 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 ### AI Notebook
 
 Clone repository in AI notebooks environment
-Run bq.ipynb notebook
+Run jupyter/bq.ipynb notebook
 
 ### Replay tool
 
@@ -128,6 +128,11 @@ gcloud pubsub subscriptions create crypto_ethereum.transactions \
   --topic-project=crypto-public-data \
   --ack-deadline=60
 ```
+
+### AI Notebook
+
+Run jupyter/pub-sub.ipynb notebook to inspect data in PubSub
+
 #### Start Dataflow pipeline
 
 ```shell script
@@ -141,3 +146,6 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 --jobName=ethereum-candlestick-demo \
 --inputType=ethereum
 ```
+
+#### JS Application
+- check real-time chart in ehtereum.html file on public bucket
