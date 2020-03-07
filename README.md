@@ -97,6 +97,9 @@ service cloud.firestore {
     match /polygon_trades/{documentId} {
      allow read;
     }
+    match /ethereum_transactions/{documentId} {
+     allow read;
+    }
     match /{document=**} {
       allow read, write: if false;
     }

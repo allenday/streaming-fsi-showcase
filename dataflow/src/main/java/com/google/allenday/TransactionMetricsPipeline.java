@@ -22,18 +22,23 @@ import org.joda.time.Duration;
 
 public class TransactionMetricsPipeline {
 
+    private static final int WINDOW_SIZE_SECONDS = 60;
+
     public static void main(String[] args) {
         TransactionMetricsPipelineOptions options =
                 PipelineOptionsFactory.fromArgs(args).withValidation().as(TransactionMetricsPipelineOptions.class);
 
         Pipeline pipeline = Pipeline.create(options);
-        PubsubIO.Read<PubsubMessage> readFromPubSub = PubsubIO
-                .readMessagesWithAttributes();
 
+        PubsubIO.Read<PubsubMessage> readFromPubSub;
         if (options.getInputDataTopicOrSubscription().contains("/topics/")) {
-            readFromPubSub.fromTopic(options.getInputDataTopicOrSubscription());
+            readFromPubSub = PubsubIO
+                    .readMessagesWithAttributes()
+                    .fromTopic(options.getInputDataTopicOrSubscription());
         } else {
-            readFromPubSub.fromSubscription(options.getInputDataTopicOrSubscription());
+            readFromPubSub = PubsubIO
+                    .readMessagesWithAttributes()
+                    .fromSubscription(options.getInputDataTopicOrSubscription());
         }
 
         PCollection<PubsubMessage> messages = pipeline.apply("Reading PubSub", readFromPubSub);
@@ -64,7 +69,10 @@ public class TransactionMetricsPipeline {
                     }));
         }
         rows.setRowSchema(InputSchema.schema)
-                .apply("Fixed windows", Window.into(FixedWindows.of(Duration.standardSeconds(30))))
+                .apply(
+                        "Fixed windows",
+                        Window.into(FixedWindows.of(Duration.standardSeconds(WINDOW_SIZE_SECONDS)))
+                )
                 .apply("Calculate statistic", Combine.globally(new CombineCandlestickFn()).withoutDefaults())
                 .apply("Prepare data points", ParDo.of(new DoFn<Candlestick, DataPoint>() {
                     @ProcessElement

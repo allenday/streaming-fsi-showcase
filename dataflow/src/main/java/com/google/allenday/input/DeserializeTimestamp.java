@@ -31,8 +31,15 @@ public class DeserializeTimestamp extends JsonDeserializer<Long> {
                     .toFormatter();
 
     @Override
-    public Long deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
-        Instant ts = parseTimestamp(jsonParser.getText());
+    public Long deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+        String text = jsonParser.getText();
+
+        // For some sources we receive unix timestamp in seconds
+        if (text.matches("\\d+")) {
+            return 1000 * Long.parseLong(text);
+        }
+
+        Instant ts = parseTimestamp(text);
 
         return ts.getMillis();
     }

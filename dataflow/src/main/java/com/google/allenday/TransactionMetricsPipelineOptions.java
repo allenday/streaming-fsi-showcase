@@ -18,7 +18,7 @@ public interface TransactionMetricsPipelineOptions extends DataflowPipelineOptio
     @Validation.Required
     String getInputDataTopicOrSubscription();
 
-    void setInputDataTopic(String value);
+    void setInputDataTopicOrSubscription(String value);
 
     @Description("GCP Firestore collection name to write results to")
     @Validation.Required
