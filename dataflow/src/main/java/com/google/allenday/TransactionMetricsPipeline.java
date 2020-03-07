@@ -8,7 +8,6 @@ import com.google.allenday.input.DeserializeStockTrade;
 import com.google.allenday.input.DeserializeTransaction;
 import com.google.allenday.input.InputSchema;
 import com.google.allenday.input.TransactionToRow;
-import com.google.allenday.transaction.EthereumTransaction;
 import com.google.allenday.transaction.StockTrade;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
@@ -28,9 +27,16 @@ public class TransactionMetricsPipeline {
                 PipelineOptionsFactory.fromArgs(args).withValidation().as(TransactionMetricsPipelineOptions.class);
 
         Pipeline pipeline = Pipeline.create(options);
-        PCollection<PubsubMessage> messages = pipeline.apply("Reading PubSub", PubsubIO
-                .readMessagesWithAttributes()
-                .fromTopic(options.getInputDataTopic()));
+        PubsubIO.Read<PubsubMessage> readFromPubSub = PubsubIO
+                .readMessagesWithAttributes();
+
+        if (options.getInputDataTopicOrSubscription().contains("/topics/")) {
+            readFromPubSub.fromTopic(options.getInputDataTopicOrSubscription());
+        } else {
+            readFromPubSub.fromSubscription(options.getInputDataTopicOrSubscription());
+        }
+
+        PCollection<PubsubMessage> messages = pipeline.apply("Reading PubSub", readFromPubSub);
 
         PCollection<Row> rows;
         if (options.getInputType().equals("ethereum")) {

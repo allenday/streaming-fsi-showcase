@@ -16,7 +16,7 @@ public interface TransactionMetricsPipelineOptions extends DataflowPipelineOptio
 
     @Description("GCP PubSub topic name to subscribe and read messages from")
     @Validation.Required
-    String getInputDataTopic();
+    String getInputDataTopicOrSubscription();
 
     void setInputDataTopic(String value);
 

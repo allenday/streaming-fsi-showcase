@@ -75,7 +75,7 @@ mvn clean package
 java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google.allenday.TransactionMetricsPipeline \
 --runner=org.apache.beam.runners.dataflow.DataflowRunner \
 --project=$PROJECT \
---inputDataTopic=projects/$PROJECT/topics/polygon.trades \
+--inputDataTopicOrSubscription=projects/$PROJECT/topics/polygon.trades \
 --firestoreCollection=polygon_trades \
 --streaming=true \
 --jobName=polygon-candlestick-demo \
@@ -114,3 +114,27 @@ gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
 ```
 - upload files from `charts` directory to public bucket
 - check real-time chart
+
+## Ethereum transactions
+
+#### Create subscription to public Ethereum topic
+
+```shell script
+gcloud pubsub subscriptions create crypto_ethereum.transactions \
+  --topic=crypto_ethereum.transactions \
+  --topic-project=crypto-public-data \
+  --ack-deadline=60
+```
+#### Start Dataflow pipeline
+
+```shell script
+cd ./dataflow
+java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google.allenday.TransactionMetricsPipeline \
+--runner=org.apache.beam.runners.dataflow.DataflowRunner \
+--project=$PROJECT \
+--inputDataTopicOrSubscription=projects/$PROJECT/subscriptions/crypto_ethereum.transactions \
+--firestoreCollection=ethereum_transactions \
+--streaming=true \
+--jobName=ethereum-candlestick-demo \
+--inputType=ethereum
+```
