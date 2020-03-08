@@ -128,7 +128,7 @@ export PUBLIC_BUCKET_NAME=${PROJECT}_public
 gsutil mb gs://$PUBLIC_BUCKET_NAME
 gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
 ```
-- upload files from `charts` directory to public bucket
+- upload files from `charts` directory to public bucket: `gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME`
 - check real-time chart
 
 ## Ethereum transactions
