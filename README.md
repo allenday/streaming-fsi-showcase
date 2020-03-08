@@ -102,7 +102,7 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
-- setup permissions on database
+- under `database > rules` set up permissions on the fireestore database
 ```
 rules_version = '2';
 service cloud.firestore {
