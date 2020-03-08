@@ -107,7 +107,7 @@ Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
 - under `database > rules` set up permissions on the fireestore database
-```
+```407996372
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
