@@ -14,7 +14,7 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 
 ### AI Notebook
 
-- clone repository in AI notebooks environment
+- clone repository in AI notebooks environment. Use the `https` URL, i.e. `https://github.com/allenday/streaming-fsi-showcase.git`
 - run jupyter/_jupyter-extensions.ipynb notebook to install extensions
 - reboot jupyter notebook VM
 - run jupyter/bq.ipynb notebook
