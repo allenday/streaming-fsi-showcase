@@ -23,6 +23,8 @@ Here's a table of contents for the tutorial. Clicking any item will link down to
   - [Stock Dataflow](#stock-dataflow)
   - [Charts](#charts)
     - [Configure Firestore](#configure-firestore)
+    - [Upload Javascript application](#upload-javascript-application)
+ - [Ethereum transactions](#ethereum-transactions)
 
 ## Prepartation
 
@@ -156,16 +158,18 @@ service cloud.firestore {
 }
 ```
 
-#### Upload the Javascript application
-- modify `charts/csmain.js` by putting your Firebase app config inside
-- create public bucket
+#### Upload Javascript application
+
+1. Modify `charts/csmain.js` by putting your Firebase app config inside
+2. Create a public bucket that will host the application, and upload the files:
 ```shell script
 export PUBLIC_BUCKET_NAME=${PROJECT}_public
 gsutil mb gs://$PUBLIC_BUCKET_NAME
 gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
 ```
-- upload files from `charts` directory to public bucket: `gsutil -m cp charts/* gs://$PUBLIC_BUCKET_NAME`
-- check real-time chart (here: `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/trade.html`)
+3. Upload files from the `charts` directory to the newly created public bucket: `gsutil -m cp $REPO/charts/* gs://$PUBLIC_BUCKET_NAME`
+4. Check that the real-time chart is receiving data. It's here:
+  `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/trade.html`
 
 ## Ethereum transactions
 
