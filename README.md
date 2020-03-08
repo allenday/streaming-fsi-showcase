@@ -22,7 +22,7 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 ### Replay tool
 
 #### Enable PubSub API in console
-go to [APIs page](https://console.developers.google.com/apis/api/dataflow.googleapis.com/overview)
+go to [APIs page](https://console.developers.google.com/apis/api/pubsub.googleapis.com/overview)
 search for PubSub and click - "Enable"
 
 Create topic
