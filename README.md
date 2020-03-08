@@ -13,14 +13,14 @@ As you can see, we'll be using a variety of GCP services:
 Here's a table of contents for the tutorial. Clicking any item will link down to that section later in this doc:
 
 - [Preparation](#preparation)
- - [Enable PubSub API](#enable-pubsub-api)
- - [Enable Dataflow API](#enable-dataflow-api)
- - [Enable Firestore](#enable-firestore)
+  - [Enable PubSub API](#enable-pubsub-api)
+  - [Enable Dataflow API](#enable-dataflow-api)
+  - [Enable Firestore](#enable-firestore)
 - [Stock trades](#stock-trades)
- - [Prepare stock data](#prepare-stock-data)
- - [AI notebook](#ai-notbook)
- - [Replay tool](#replay-tool)
- - [Dataflow](#dataflow)
+  - [Prepare stock data](#prepare-stock-data)
+  - [AI notebook](#ai-notbook)
+  - [Replay tool](#replay-tool)
+  - [Dataflow](#dataflow)
 
 ## Prepartation
 
