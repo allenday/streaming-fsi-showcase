@@ -70,6 +70,8 @@ gcloud compute instances create-with-container replay-tool \
 
 ### Dataflow
 
+Perform a sanity check with a test subscription to make sure data are available from the replay tool.
+
 Create subscription
 ```shell script
 gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-deadline=60
