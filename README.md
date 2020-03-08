@@ -36,7 +36,7 @@ git clone https://github.com/allenday/streaming-fsi-showcase
 cd streaming-fsi-showcase
 ```
 
-Create temp resources and start a VM running docker container
+Create temp resources and start a VM running docker container based on the [blockchainetl/bigquery-to-pubsub](blockchainetl/bigquery-to-pubsub) repo.
 ```shell script
 cd ./replay
 # we'll create a temporary GCS bucket with this name:
