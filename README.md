@@ -1,8 +1,22 @@
-# Streaming FSI Showcase
+# Streaming FSI showcase
+
+This document is designed as a tutorial of copy-paste-able commands to see how to use streaming data in Google Cloud Platform's Data and Analytics tools. Here's an overview of the application we'll be showcasing in this tutorial:
 
 ![Architecture](images/architecture.png "Architecture")
 
-## Stock Trades
+As you can see, we'll be using a variety of GCP services:
+- BigQuery - some of the data come from here, and are replayed into...
+- PubSub - we'll be showing how to consume replayed historical financial data, as well as live cryptocurrency data
+- Dataflow - we're using dataflow to perform a simple aggregation of the pubsub stream into fixed-size time windows so that they can be visualized as candlesticks, a common type of data visualization for financial data.
+- Firestore - we're putting data into Firestore for web visualization with D3.js
+
+Here's a table of contents for the tutorial. Clicking any item will link down to that section later in this doc:
+
+- [Stock trades](#stock-trades)
+  - [Prepare stock data](#prepare-stock-data)
+
+
+## Stock trades
 ### Prepare stock data
 
 Copy stock trades historical data
