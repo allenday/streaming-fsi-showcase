@@ -38,6 +38,8 @@ cd streaming-fsi-showcase
 
 Create temp resources and start a VM running docker container based on the [blockchain-etl/bigquery-to-pubsub](https://github.com/blockchain-etl/bigquery-to-pubsub) repo.
 ```shell script
+# we'll replay the trade data faster than real-time to make for a more dynamic demo
+$REPLAY_RATE=0.1
 cd ./replay
 # we'll create a temporary GCS bucket with this name:
 export TEMP_RESOURCE_NAME=$(./get_temp_resource_name.sh)
@@ -59,7 +61,7 @@ gcloud compute instances create-with-container replay-tool \
   --container-arg=--batch-size-in-seconds \
   --container-arg=1800 \
   --container-arg=--replay-rate \
-  --container-arg=0.1 \
+  --container-arg=$REPLAY_RATE \
   --container-arg=--pubsub-topic \
   --container-arg=projects/$PROJECT/topics/polygon.trades \
   --container-arg=--temp-bigquery-dataset \
