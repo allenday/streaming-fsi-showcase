@@ -58,6 +58,7 @@ Clone this repository in Cloud Shell:
 ```shell script
 git clone https://github.com/allenday/streaming-fsi-showcase
 cd streaming-fsi-showcase
+export $REPO=PWD
 ```
 
 Create a PubSub topic. We'll be publishing data to this topic from a VM that retrieves historical data from BigQuery and replays it as if it's live data.
@@ -73,7 +74,7 @@ Note that in this step we define a variable `$REPLAY_RATE` to replay data at 10x
 ```shell script
 # we'll replay the trade data faster than real-time to make for a more dynamic demo
 $REPLAY_RATE=0.1
-cd ./replay
+cd $REPO/replay
 # we'll create a temporary GCS bucket with this name:
 export TEMP_RESOURCE_NAME=$(./get_temp_resource_name.sh)
 bash ./create_temp_resources.sh
@@ -116,7 +117,7 @@ gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-d
 
 #### Start Dataflow pipeline
 ```shell script
-cd ./dataflow
+cd $REPO/dataflow
 mvn clean package
 java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google.allenday.TransactionMetricsPipeline \
 --runner=org.apache.beam.runners.dataflow.DataflowRunner \
@@ -135,7 +136,7 @@ Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
 - under `database > rules` set up permissions on the fireestore database
-```407996372
+```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -160,7 +161,7 @@ export PUBLIC_BUCKET_NAME=${PROJECT}_public
 gsutil mb gs://$PUBLIC_BUCKET_NAME
 gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
 ```
-- upload files from `charts` directory to public bucket: `gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME`
+- upload files from `charts` directory to public bucket: `gsutil -m cp charts/* gs://$PUBLIC_BUCKET_NAME`
 - check real-time chart (here: `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/trade.html`)
 
 ## Ethereum transactions
@@ -181,7 +182,7 @@ Run jupyter/pub-sub.ipynb notebook to inspect data in PubSub
 #### Start Dataflow pipeline
 
 ```shell script
-cd ./dataflow
+cd $REPO/dataflow
 java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google.allenday.TransactionMetricsPipeline \
 --runner=org.apache.beam.runners.dataflow.DataflowRunner \
 --project=$PROJECT \
