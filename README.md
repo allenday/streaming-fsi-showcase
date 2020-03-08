@@ -39,8 +39,9 @@ cd streaming-fsi-showcase
 Create temp resources and start a VM running docker container
 ```shell script
 cd ./replay
-bash ./create_temp_resources.sh
+# we'll create a temporary GCS bucket with this name:
 export TEMP_RESOURCE_NAME=$(./get_temp_resource_name.sh)
+bash ./create_temp_resources.sh
 gcloud compute instances create-with-container replay-tool \
   --zone=us-central1-a \
   --machine-type=n1-standard-1 \
