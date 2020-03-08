@@ -12,11 +12,29 @@ As you can see, we'll be using a variety of GCP services:
 
 Here's a table of contents for the tutorial. Clicking any item will link down to that section later in this doc:
 
+- [Preparation](#preparation)
+ - [Enable PubSub API](#enable-pubsub-api)
+ - [Enable Dataflow API](#enable-dataflow-api)
+ - [Enable Firestore](#enable-firestore)
 - [Stock trades](#stock-trades)
-  - [Prepare stock data](#prepare-stock-data)
+ - [Prepare stock data](#prepare-stock-data)
+ - [AI notebook](#ai-notbook)
+ - [Replay tool](#replay-tool)
+ - [Dataflow](#dataflow)
 
+## Prepartation
+
+### Enable PubSub API
+Go to [APIs page](https://console.developers.google.com/apis/api/pubsub.googleapis.com/overview). Search for PubSub and click - "Enable"
+
+### Enable Dataflow API
+Go to [APIs page](https://console.developers.google.com/apis/api/dataflow.googleapis.com/overview). Search for Dataflow and click - "Enable"
+
+### Enable Firestore
+Go to [Firestore Page](https://console.cloud.google.com/firestore/welcome). Select Firestore in Native mode.
 
 ## Stock trades
+
 ### Prepare stock data
 
 Copy stock trades historical data
@@ -35,22 +53,23 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 
 ### Replay tool
 
-#### Enable PubSub API in console
-go to [APIs page](https://console.developers.google.com/apis/api/pubsub.googleapis.com/overview)
-search for PubSub and click - "Enable"
+Clone this repository in Cloud Shell:
 
-Create topic
-```shell script
-gcloud pubsub topics create polygon.trades --project=$PROJECT
-```
-
-Clone this repository in Cloud Shell
 ```shell script
 git clone https://github.com/allenday/streaming-fsi-showcase
 cd streaming-fsi-showcase
 ```
 
-Create temp resources and start a VM running docker container based on the [blockchain-etl/bigquery-to-pubsub](https://github.com/blockchain-etl/bigquery-to-pubsub) repo.
+Create a PubSub topic. We'll be publishing data to this topic from a VM that retrieves historical data from BigQuery and replays it as if it's live data.
+
+```shell script
+gcloud pubsub topics create polygon.trades --project=$PROJECT
+```
+
+Create temp resources and start a GCE instance running a Docker container based on the [blockchain-etl/bigquery-to-pubsub](https://github.com/blockchain-etl/bigquery-to-pubsub) repo.
+
+Note that in this step we define a variable `$REPLAY_RATE` to replay data at 10x speed. It makes this demo more dynamic and more interesting than watching paint dry.
+
 ```shell script
 # we'll replay the trade data faster than real-time to make for a more dynamic demo
 $REPLAY_RATE=0.1
@@ -84,21 +103,16 @@ gcloud compute instances create-with-container replay-tool \
   --container-arg=$TEMP_RESOURCE_NAME
 ```
 
-### Dataflow
+Before moving on, go to the PubSub page of Cloud Console and perform a sanity check. Create a test subscription to make sure data are being published to PubSub from the replay tool.
 
-Perform a sanity check with a test subscription to make sure data are available from the replay tool.
+### Dataflow
 
 Create subscription
 ```shell script
 gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-deadline=60
 ```
 
-#### Enable Dataflow API in console
-go to [APIs page](https://console.developers.google.com/apis/api/dataflow.googleapis.com/overview)
-search for Dataflow and click - "Enable"
-#### Enable Firestore
-go to [Firestore Page](https://console.cloud.google.com/firestore/welcome)
-select Firestore in Native mode
+
 
 #### Start Dataflow pipeline
 ```shell script
