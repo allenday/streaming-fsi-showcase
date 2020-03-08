@@ -20,7 +20,9 @@ Here's a table of contents for the tutorial. Clicking any item will link down to
   - [Prepare stock data](#prepare-stock-data)
   - [AI notebook](#ai-notbook)
   - [Replay tool](#replay-tool)
-  - [Dataflow](#dataflow)
+  - [Stock Dataflow](#stock-dataflow)
+  - [Charts](#charts)
+    - [Configure Firestore](#configure-firestore)
 
 ## Prepartation
 
@@ -106,16 +108,15 @@ gcloud compute instances create-with-container replay-tool \
 
 Before moving on, go to the PubSub page of Cloud Console and perform a sanity check. Create a test subscription to make sure data are being published to PubSub from the replay tool.
 
-### Dataflow
+### Stock dataflow
 
-Create subscription
+Create a subscription:
 ```shell script
 gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-deadline=60
 ```
 
+And start a dataflow pipeline:
 
-
-#### Start Dataflow pipeline
 ```shell script
 cd $REPO/dataflow
 mvn clean package
@@ -129,9 +130,11 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 --inputType=polygon
 ```
 
+As a sanity check, go to the dataflow page in Cloud Console to confirm that the dataflow job was created and that is is successfully retrieving data from PubSub.
+
 ### Charts
 
-#### Firestore configuration
+#### Configure Firestore
 Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
@@ -153,7 +156,7 @@ service cloud.firestore {
 }
 ```
 
-#### JS Application
+#### Upload the Javascript application
 - modify `charts/csmain.js` by putting your Firebase app config inside
 - create public bucket
 ```shell script
