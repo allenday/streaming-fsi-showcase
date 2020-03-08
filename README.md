@@ -13,20 +13,34 @@ As you can see, we'll be using a variety of GCP services:
 Here's a table of contents for the tutorial. Clicking any item will link down to that section later in this doc:
 
 - [Preparation](#preparation)
+  - [Clone repo](#clone-repo)
   - [Enable PubSub API](#enable-pubsub-api)
   - [Enable Dataflow API](#enable-dataflow-api)
   - [Enable Firestore](#enable-firestore)
+    - [Configure Firestore](#configure-firestore)
+  - [Upload web application](#upload-web-application)
 - [Stock trades](#stock-trades)
   - [Prepare stock data](#prepare-stock-data)
-  - [AI notebook](#ai-notbook)
+  - [Stock AI notebook](#stock-ai-notbook)
   - [Replay tool](#replay-tool)
-  - [Stock Dataflow](#stock-dataflow)
-  - [Charts](#charts)
-    - [Configure Firestore](#configure-firestore)
-    - [Upload Javascript application](#upload-javascript-application)
- - [Ethereum transactions](#ethereum-transactions)
+  - [Start stock Dataflow pipeline](#start-stock-dataflow-pipeline)
+- [Ethereum transactions](#ethereum-transactions)
+  - [Create subscription to public Ethereum topic](#create-subscription-to-public-ethereum-topic)
+  - [Ethereum AI Notebook](#ethereum-ai-notebook)
+  - [Start Ethereum Dataflow pipeline](#start-ethereum-dataflow-pipeline)
+  - [Visualize streaming Ethereum data in web browser](#visualize-streaming-ethereum-data-in-web-browser)
 
 ## Prepartation
+
+### Clone repo
+
+Clone this repository in Cloud Shell:
+
+```shell script
+git clone https://github.com/allenday/streaming-fsi-showcase
+cd streaming-fsi-showcase
+export $REPO=PWD
+```
 
 ### Enable PubSub API
 Go to [APIs page](https://console.developers.google.com/apis/api/pubsub.googleapis.com/overview). Search for PubSub and click - "Enable"
@@ -36,6 +50,41 @@ Go to [APIs page](https://console.developers.google.com/apis/api/dataflow.google
 
 ### Enable Firestore
 Go to [Firestore Page](https://console.cloud.google.com/firestore/welcome). Select Firestore in Native mode.
+
+#### Configure Firestore
+Go to [Firestore console](https://console.firebase.google.com/)
+- add your project to Firebase Console
+- add new application named "charts"
+- under `database > rules` set up permissions on the fireestore database
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /polygon_trades/{documentId} {
+     allow read;
+    }
+    match /ethereum_transactions/{documentId} {
+     allow read;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+### Upload web application
+
+1. Modify `charts/csmain.js` by putting your Firebase app config inside
+2. Create a public bucket that will host the application, and upload the files:
+```shell script
+export PUBLIC_BUCKET_NAME=${PROJECT}_public
+gsutil mb gs://$PUBLIC_BUCKET_NAME
+gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
+```
+3. Upload files from the `charts` directory to the newly created public bucket: `gsutil -m cp $REPO/charts/* gs://$PUBLIC_BUCKET_NAME`
+
+There won't be anything to see... yet. We'll come back to view these webpages later, after the data begins to flow and made available to them for visualization.
 
 ## Stock trades
 
@@ -48,7 +97,7 @@ bq mk polygon
 bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 ```
 
-### AI Notebook
+### Stock AI Notebook
 
 - clone repository in AI notebooks environment. Use the `https` URL, i.e. `https://github.com/allenday/streaming-fsi-showcase.git`
 - run `jupyter/_jupyter-extensions.ipynb` notebook to install extensions (takes ~10 minutes)
@@ -57,13 +106,6 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 
 ### Replay tool
 
-Clone this repository in Cloud Shell:
-
-```shell script
-git clone https://github.com/allenday/streaming-fsi-showcase
-cd streaming-fsi-showcase
-export $REPO=PWD
-```
 
 Create a PubSub topic. We'll be publishing data to this topic from a VM that retrieves historical data from BigQuery and replays it as if it's live data.
 
@@ -110,7 +152,7 @@ gcloud compute instances create-with-container replay-tool \
 
 Before moving on, go to the PubSub page of Cloud Console and perform a sanity check. Create a test subscription to make sure data are being published to PubSub from the replay tool.
 
-### Stock dataflow
+### Start stock dataflow pipeline
 
 Create a subscription:
 ```shell script
@@ -134,46 +176,12 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 
 As a sanity check, go to the dataflow page in Cloud Console to confirm that the dataflow job was created and that is is successfully retrieving data from PubSub.
 
-### Charts
-
-#### Configure Firestore
-Go to [Firestore console](https://console.firebase.google.com/)
-- add your project to Firebase Console
-- add new application named "charts"
-- under `database > rules` set up permissions on the fireestore database
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /polygon_trades/{documentId} {
-     allow read;
-    }
-    match /ethereum_transactions/{documentId} {
-     allow read;
-    }
-    match /{document=**} {
-      allow read, write: if false;
-    }
-  }
-}
-```
-
-#### Upload Javascript application
-
-1. Modify `charts/csmain.js` by putting your Firebase app config inside
-2. Create a public bucket that will host the application, and upload the files:
-```shell script
-export PUBLIC_BUCKET_NAME=${PROJECT}_public
-gsutil mb gs://$PUBLIC_BUCKET_NAME
-gsutil iam ch allUsers:objectViewer gs://$PUBLIC_BUCKET_NAME
-```
-3. Upload files from the `charts` directory to the newly created public bucket: `gsutil -m cp $REPO/charts/* gs://$PUBLIC_BUCKET_NAME`
-4. Check that the real-time chart is receiving data. It's here:
+Check that the real-time chart is receiving data. It's here:
   `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/trade.html`
 
 ## Ethereum transactions
 
-#### Create subscription to public Ethereum topic
+### Create subscription to public Ethereum topic
 
 ```shell script
 gcloud pubsub subscriptions create crypto_ethereum.transactions \
@@ -182,11 +190,11 @@ gcloud pubsub subscriptions create crypto_ethereum.transactions \
   --ack-deadline=60
 ```
 
-### AI Notebook
+### Ethereum AI Notebook
 
-Run jupyter/pub-sub.ipynb notebook to inspect data in PubSub
+Run the `jupyter/pub-sub.ipynb` notebook to inspect data in PubSub
 
-#### Start Dataflow pipeline
+### Start Ethereum Dataflow pipeline
 
 ```shell script
 cd $REPO/dataflow
@@ -200,5 +208,7 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 --inputType=ethereum
 ```
 
-#### JS Application
-- check real-time chart in ehtereum.html file on public bucket
+### Visualize streaming Ethereum data in web browser
+
+Check that the real-time chart is receiving live data. It's here: `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/ethereum.html`
+
