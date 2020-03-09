@@ -30,7 +30,7 @@ Here's a table of contents for the tutorial. Clicking any item will link down to
   - [Start Ethereum Dataflow pipeline](#start-ethereum-dataflow-pipeline)
   - [Visualize streaming Ethereum data in web browser](#visualize-streaming-ethereum-data-in-web-browser)
 
-## Prepartation
+## Preparation
 
 ### Clone repo
 
@@ -55,7 +55,7 @@ Go to [Firestore Page](https://console.cloud.google.com/firestore/welcome). Sele
 Go to [Firestore console](https://console.firebase.google.com/)
 - add your project to Firebase Console
 - add new application named "charts"
-- under `database > rules` set up permissions on the fireestore database
+- under `database > rules` set up permissions on the Fireestore database
 ```
 rules_version = '2';
 service cloud.firestore {
@@ -90,7 +90,8 @@ There won't be anything to see... yet. We'll come back to view these webpages la
 
 ### Prepare stock data
 
-Copy stock trades historical data
+Copy some stock trades historical data into a temp table for use in this tutorial:
+
 ```shell script
 export PROJECT=$(gcloud config get-value project 2> /dev/null)
 bq mk polygon
@@ -99,15 +100,14 @@ bq cp ethereum-streaming-dev:polygon.trades $PROJECT:polygon.trades
 
 ### Stock AI Notebook
 
-- clone repository in AI notebooks environment. Use the `https` URL, i.e. `https://github.com/allenday/streaming-fsi-showcase.git`
-- run `jupyter/_jupyter-extensions.ipynb` notebook to install extensions (takes ~10 minutes)
-- reboot jupyter notebook VM
-- run `jupyter/bq.ipynb` notebook
+- Clone this repository (`streaming-fsi-showcase`) into the Cloud AI notebooks environment. Use the `https` URL, i.e. `https://github.com/allenday/streaming-fsi-showcase.git`
+- Run `jupyter/_jupyter-extensions.ipynb` notebook to install extensions (takes ~10 minutes)
+- Reboot jupyter notebook GCE instance
+- Run the `jupyter/bq.ipynb` notebook
 
 ### Replay tool
 
-
-Create a PubSub topic. We'll be publishing data to this topic from a VM that retrieves historical data from BigQuery and replays it as if it's live data.
+Create a PubSub topic. We'll be publishing data to this topic from a GCE instance that retrieves the historical from BigQuery and replays it as if it's live data.
 
 ```shell script
 gcloud pubsub topics create polygon.trades --project=$PROJECT
@@ -159,7 +159,7 @@ Create a subscription:
 gcloud pubsub subscriptions create polygon.trades --topic=polygon.trades --ack-deadline=60
 ```
 
-And start a dataflow pipeline:
+and start a dataflow pipeline:
 
 ```shell script
 cd $REPO/dataflow
@@ -174,9 +174,10 @@ java -cp target/ethereum-streaming-analytics-bundled-1.0-SNAPSHOT.jar com.google
 --inputType=polygon
 ```
 
-As a sanity check, go to the dataflow page in Cloud Console to confirm that the dataflow job was created and that is is successfully retrieving data from PubSub.
+As a sanity check, go to the Dataflow page in Cloud Console to confirm that the dataflow job was created and that it is successfully retrieving data from PubSub.
 
 Check that the real-time chart is receiving data. It's here:
+
   `echo https://storage.googleapis.com/$PUBLIC_BUCKET_NAME/trade.html`
 
 ## Ethereum transactions
