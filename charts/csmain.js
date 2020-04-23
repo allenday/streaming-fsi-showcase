@@ -6,9 +6,9 @@ const chartDimensions = {
     large: {
         margin: {
             top: 50,
-            right: 20,
+            right: 50,
             bottom: 40,
-            left: 50
+            left: 20
         },
         width: 1080,
         height: 500
@@ -16,9 +16,9 @@ const chartDimensions = {
     small: {
         margin: {
             top: 0,
-            right: 20,
+            right: 55,
             bottom: 20,
-            left: 50
+            left: 20
         },
         width: 500,
         height: 220
@@ -159,6 +159,8 @@ function renderChart({ type, size, data }) {
     const { margin, width, height } = dimensions(size);
     // let Bheight = 460;
     let Bheight = height;
+    const lastEntry = data[data.length - 1];
+    const lastClose = lastEntry.close;
 
     function csrender(selection) {
         selection.each(function () {
@@ -171,7 +173,7 @@ function renderChart({ type, size, data }) {
             if (type === 'ethereum') {
                 y = d3.scaleLinear()
                     .domain([1, 10000])
-                    .range([height, 0]);
+                        .range([height, 0]);
 //              // for replay data log scale works better
 //              y = d3.scaleLog()
 //                    .domain([1, 10000])
@@ -214,10 +216,21 @@ function renderChart({ type, size, data }) {
                 .call(xAxis);
 
             const yTicksCount = Math.floor(height / 100) < 3 ? 3 : Math.floor(height / 100);
+            const yTicks = d3.axisRight()
+                .scale(y)
+                .ticks(yTicksCount);
+
+                yTicks
+                    .tickValues([...yTicks.scale().ticks(yTicksCount), lastClose])
+                    .ticks(yTicksCount + 1)
+                    .tickFormat(d3.format(""))
+                    .tickSize(width)
+                    .tickSizeOuter(0);
+
             svg.append("g")
                 .attr("class", "axis grid")
-                .attr("transform", "translate(" + width + ",0)")
-                .call(d3.axisLeft().scale(y).ticks(yTicksCount).tickFormat(d3.format("")).tickSize(width).tickSizeOuter(0));
+                .attr("transform", "translate(0,0)")
+                .call(yTicks);
 
             const bands = svg
                 .selectAll(".bands")
@@ -264,14 +277,42 @@ function renderChart({ type, size, data }) {
             candle.selectAll("rect")
                 .data(d => d)
                 .enter()
+                .append("g")
+                .attr("class", (d, i) => "candle-" + i)
+                .classed("rise", ({ close, open }) => close > open)
+                .classed("fall", ({ close, open }) => open > close)
                 .append("rect")
                 .attr("x", d => x(d.timestamp) + delta)
                 .attr("y", d => y(d3.max([d.open, d.close])))
-                .attr("class", (d, i) => "candle" + i)
                 .attr("height", d => y(d3.min([d.open, d.close])) - y(d3.max([d.open, d.close])))
-                .attr("width", candlewidth)
-                .classed("rise", ({ close, open }) => close > open)
-                .classed("fall", ({ close, open }) => open > close);
+                .attr("width", candlewidth);
+
+            // Style `Last Price` Tick
+            const YTicks = svg.selectAll('.axis.grid .tick');
+            YTicks
+                .classed("last-price", data => data === lastClose)
+                .classed("fall", data => data === lastClose && lastClose < lastEntry.open)
+                .classed("rise", data => data === lastClose && lastClose > lastEntry.open);
+
+            const lastPriceText = svg.select(".last-price text");
+            const lastPriceTextLength = lastPriceText
+                .node()
+                .getComputedTextLength();
+            lastPriceText.attr("x", +lastPriceText.attr("x") + 4);
+            const lastPriceTextX = lastPriceText.attr("x");
+
+
+            const lastPriceTextPadding = 8;
+            const lastPriceRectWidth = lastPriceTextLength + lastPriceTextPadding;
+            const lastPriceRectX = lastPriceTextX - lastPriceTextPadding / 2;
+
+
+            svg.select(".last-price")
+                .insert("rect", ":first-child")
+                .attr("x", lastPriceRectX)
+                .attr("y", -10)
+                .attr("width", lastPriceRectWidth)
+                .attr("height", 18);
 
         });
     }

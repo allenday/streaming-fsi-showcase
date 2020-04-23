@@ -1,7 +1,9 @@
 body {
     --main-bg: #292f3b;
-    --low-color: #cc5555;
-    --high-color: turquoise;
+    --low-color: #EA0070;
+    /* --low-color: #cc5555; */
+    --high-color: #70A800;
+    /* --high-color: turquoise; */
     --utility-color: wheat;
     --text-color: #fefefe;
 
@@ -63,7 +65,7 @@ h1 i {
 .chart-container .utility-data-container {
     display: flex;
     font-size: .8rem;
-    margin-bottom: -30px;
+    margin-bottom: -10px;
     background: var(--main-bg);
     z-index: 1;
     position: relative;
@@ -190,4 +192,20 @@ h1 i {
 .candles rect {
     pointer-events: none;
     shape-rendering: crispEdges;
+}
+
+.last-price text{
+    font-size: 14px;
+}
+.last-price.rise text{
+    fill: var(--main-bg);
+}
+.last-price.rise rect{
+    fill: var(--high-color);
+}
+.last-price.fall text{
+    fill: var(--text-color);
+}
+.last-price.fall rect{
+    fill: var(--low-color);
 }

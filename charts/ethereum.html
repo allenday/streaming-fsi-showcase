@@ -46,12 +46,13 @@
     <script src="csmain.js"></script>
 
     <script>
+        const interval = (new URL(window.location.href)).searchParams.get('interval') ?? 60;
         createChart({
             type: 'ethereum',
             size: 'large',
             id: '#chart',
             height: 500,
-            collection: 'ethereum_transactions',
+            collection: 'ethereum_candles_' + interval,
             divider: 1000000000
         });
     </script>
